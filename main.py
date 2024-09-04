@@ -1,7 +1,6 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import messagebox
 import subprocess
-import os
 
 # active key 
 keys = {
@@ -55,12 +54,13 @@ def on_submit():
         result_label.config(text=f"{key}", foreground="#5bc0de")
         if key != 'مفتاح غير متوفر':
             try:
-                # تنفيذ الأمر slmgr
-                command = f'slmgr /ipk {key}'
-                # تشغيل cmd كمسؤول
+                # دمج الأوامر في سلسلة واحدة
+                command = f'slmgr /ipk {key} && slmgr /ato'
+                # تشغيل cmd كمسؤول وتنفيذ الأوامر
                 subprocess.run(['powershell', '-Command', f'Start-Process cmd -ArgumentList "/c {command}" -Verb RunAs'], check=True)
             except subprocess.CalledProcessError as e:
-                result_label.config(text=f"خطأ: {str(e)}", foreground="#d9534f")
+                # إظهار نافذة منبثقة تحتوي على رسالة الخطأ
+                messagebox.showerror("خطأ", f"حدث خطأ أثناء تنفيذ الأوامر: {str(e)}")
 
 def on_hover(event):
     event.widget.config(bg="#f0ad4e", foreground="white")
